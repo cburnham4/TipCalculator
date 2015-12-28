@@ -6,8 +6,11 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import java.util.TimerTask;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -23,6 +26,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView tv_tipPerPerson;
 
     private Toolbar toolbar;
+
+    private AdsHelper adsHelper;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +51,19 @@ public class MainActivity extends AppCompatActivity {
         et_tipPercent.addTextChangedListener(new MyTextWatcher());
         et_taxPercent.addTextChangedListener(new MyTextWatcher());
         et_numPeople.addTextChangedListener(new MyTextWatcher());
+
+        adsHelper = new AdsHelper(this.getWindow().getDecorView(),  getResources().getString(R.string.admob_timer_id),this);
+
+        adsHelper.setUpAds();
+        int delay = 1000; // delay for 1 sec.
+        int period = getResources().getInteger(R.integer.ad_refresh_rate);
+        java.util.Timer timer = new java.util.Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+                adsHelper.refreshAd();  // display the data
+            }
+        }, delay, period);
+
 
     }
 
